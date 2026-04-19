@@ -1,9 +1,8 @@
+// frontend/src/App.jsx
 import { useState, useEffect } from 'react';
 
-// 注意路徑：現在都在 src 底下了，所以用 ./ 或 ../ 即可
 import { useOceanSound } from './hooks/useOceanSound';
 import { generateStepsAPI, generatePlanAPI, processUnplannedTaskAPI } from './services/api';
-// 如果你有 constants.js 記得確認路徑
 // import { INITIAL_LETTERS } from './data/constants'; 
 
 import InitialView from './components/views/InitialView';
@@ -100,92 +99,60 @@ export default function App() {
   }, []);
 
   return (
-    <>
-      {view === 'initial' && (
-        <InitialView
-          userName={userName} setUserName={setUserName}
-          beanName={beanName} setBeanName={setBeanName}
-          userGoal={userGoal} setUserGoal={setUserGoal}
-          selectedRecharge={selectedRecharge}
-          toggleRecharge={(item) => setSelectedRecharge(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item])}
-          onSubmit={handleGoalSubmit}
-          isLoading={isLoading}
-        />
-      )}
+    <div className="min-h-screen grid place-items-center">
+      <div className="w-full md:w-1/2 lg:w-1/3 min-h-[100dvh] relative shadow-2xl overflow-x-hidden bg-white">
 
-      {view === 'steps' && (
-        <StepsView
-          userName={userName} userGoal={userGoal}
-          generatedSteps={generatedSteps}
-          selectedSteps={selectedSteps}
-          toggleStep={(step) => setSelectedSteps(prev => prev.includes(step) ? prev.filter(s => s !== step) : [...prev, step])}
-          onBack={() => setView('initial')}
-          onNext={handleGeneratePlan}
-          isLoading={isLoading}
-        />
-      )}
+        {view === 'initial' && (
+          <InitialView
+            userName={userName} setUserName={setUserName}
+            beanName={beanName} setBeanName={setBeanName}
+            userGoal={userGoal} setUserGoal={setUserGoal}
+            selectedRecharge={selectedRecharge}
+            toggleRecharge={(item) => setSelectedRecharge(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item])}
+            onSubmit={handleGoalSubmit}
+            isLoading={isLoading}
+          />
+        )}
 
-      {view === 'main' && (
-        <RoomView
+        {view === 'steps' && (
+          <StepsView
+            userName={userName} userGoal={userGoal}
+            generatedSteps={generatedSteps}
+            selectedSteps={selectedSteps}
+            toggleStep={(step) => setSelectedSteps(prev => prev.includes(step) ? prev.filter(s => s !== step) : [...prev, step])}
+            onBack={() => setView('initial')}
+            onNext={handleGeneratePlan}
+            isLoading={isLoading}
+          />
+        )}
+
+        {view === 'main' && (
+          <RoomView
+            userName={userName} beanName={beanName}
+            onSwitchToDeck={() => setView('deck')}
+            onOpenMailbox={() => setShowMailbox(true)}
+            onOpenFirstAid={() => setShowFirstAid(true)}
+            isPlaying={isPlaying} toggleSound={toggleSound}
+            hasUnreadMail={hasUnreadMail}
+            energy={energy} setEnergy={handleEnergySelect}
+            todoList={todoList} toggleTimer={toggleTimer} completeTask={completeTask}
+          />
+        )}
+
+        {view === 'deck' && <DeckView onBack={() => setView('main')} />}
+
+        <Mailbox
+          isOpen={showMailbox} onClose={() => setShowMailbox(false)}
+          letters={letters} selectedLetter={null} onSelectLetter={() => { }}
+          onOpenWrite={() => { }} hasUnread={hasUnreadMail}
+        />
+
+        <FirstAid
+          isOpen={showFirstAid} onClose={() => setShowFirstAid(false)}
           userName={userName} beanName={beanName}
-          onSwitchToDeck={() => setView('deck')}
-          onOpenMailbox={() => setShowMailbox(true)}
-          onOpenFirstAid={() => setShowFirstAid(true)}
-          isPlaying={isPlaying} toggleSound={toggleSound}
-          hasUnreadMail={hasUnreadMail}
-          energy={energy} setEnergy={handleEnergySelect}
-          todoList={todoList} toggleTimer={toggleTimer} completeTask={completeTask}
         />
-      )}
 
-      {view === 'deck' && <DeckView onBack={() => setView('main')} />}
-
-      <Mailbox
-        isOpen={showMailbox} onClose={() => setShowMailbox(false)}
-        letters={letters} selectedLetter={null} onSelectLetter={() => { }}
-        onOpenWrite={() => { }} hasUnread={hasUnreadMail}
-      />
-
-      <FirstAid
-        isOpen={showFirstAid} onClose={() => setShowFirstAid(false)}
-        userName={userName} beanName={beanName}
-      />
-    </>
+      </div>
+    </div>
   );
 }
-
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
-
-// function App() {
-//   const [count, setCount] = useState(0)
-
-//   return (
-//     <>
-//       <div>
-//         <a href="https://vite.dev" target="_blank">
-//           <img src={viteLogo} className="logo" alt="Vite logo" />
-//         </a>
-//         <a href="https://react.dev" target="_blank">
-//           <img src={reactLogo} className="logo react" alt="React logo" />
-//         </a>
-//       </div>
-//       <h1>Vite + React</h1>
-//       <div className="card">
-//         <button onClick={() => setCount((count) => count + 1)}>
-//           count is {count}
-//         </button>
-//         <p>
-//           Edit <code>src/App.jsx</code> and save to test HMR
-//         </p>
-//       </div>
-//       <p className="read-the-docs">
-//         Click on the Vite and React logos to learn more
-//       </p>
-//     </>
-//   )
-// }
-
-// export default App
